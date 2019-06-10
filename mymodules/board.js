@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
         page = 1;
     }
 
-    let sql = "SELECT b.*, u.name FROM nodeBoards AS b, nodeDB AS u "
+    let sql = "SELECT b.*, u.name FROM boards  AS b, users AS u "
         + " WHERE u.email = b.writer "
         + " ORDER BY b.id DESC LIMIT ?, 10";
 
@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
         }
         let list = result;
 
-        conn.query("SELECT count(*) AS cnt FROM nodeBoards", [], (err, result)=>{
+        conn.query("SELECT count(*) AS cnt FROM boards ", [], (err, result)=>{
             let p = {};
             page = parseInt(page);
             p.nowPage = page;
@@ -84,7 +84,7 @@ router.post('/write', (req, res) => {
         return;
     }
 
-    let sql = "INSERT INTO nodeBoards (title, writer, content) VALUES (?, ?, ?)";
+    let sql = "INSERT INTO boards  (title, writer, content) VALUES (?, ?, ?)";
     conn.query(sql, [title, writer, content], (err, result) => {
         if (err) {
             req.session.flashMsg = { type: 'danger', msg: '데이터베이스 오류 발생' };
@@ -104,7 +104,7 @@ router.post('/write', (req, res) => {
 router.get('/view/:id', (req, res) => {
     let id = req.params.id;
 
-    let sql = "SELECT b.*, u.name FROM nodeBoards AS b, nodeDB AS u "
+    let sql = "SELECT b.*, u.name FROM boards  AS b, users AS u "
         + " WHERE id = ? AND u.email = b.writer";
     conn.query(sql, [id], (err, result) => {
         if (err) {
@@ -129,7 +129,7 @@ router.get('/del/:id', (req, res) => {
         });
         return;
     }
-    let sql = "SELECT * FROM nodeBoards WHERE id = ?";
+    let sql = "SELECT * FROM boards  WHERE id = ?";
     conn.query(sql, [id], (err, result) => {
         if (err || result.length == 0
             || result[0].writer != req.session.user.email) {
@@ -140,7 +140,7 @@ router.get('/del/:id', (req, res) => {
             return;
         }
 
-        let sql = "DELETE FROM nodeBoards WHERE id = ?";
+        let sql = "DELETE FROM boards  WHERE id = ?";
         conn.query(sql, [id], (err, result) => {
             //에러처리 귀찮아서 안함.
             req.session.flashMsg
@@ -159,7 +159,7 @@ router.get('/mod/:id', (req, res) => {
         return;
     }
 
-    let sql = "SELECT * FROM nodeBoards WHERE id = ?";
+    let sql = "SELECT * FROM boards  WHERE id = ?";
     conn.query(sql, [id], (err, result) => {
         //에러처리 귀찮아서 안함.
 
@@ -186,7 +186,7 @@ router.post('/mod/:id', (req, res) => {
         return;
     }
 
-    let sql = "SELECT * FROM nodeBoards WHERE id = ?";
+    let sql = "SELECT * FROM boards WHERE id = ?";
     conn.query(sql, [id], (err, result) => {
         //에러처리 귀찮아서 안함.
 
@@ -202,7 +202,7 @@ router.post('/mod/:id', (req, res) => {
         let title = req.body.title;
         let content = req.body.content;
 
-        let sql = "UPDATE nodeBoards SET title = ?, content = ? WHERE id = ?";
+        let sql = "UPDATE boards SET title = ?, content = ? WHERE id = ?";
         conn.query(sql, [title, content, id], (err, result) => {
             if (result.affectedRows == 1) {
                 req.session.flashMsg = { type: 'success', msg: '성공적으로 글 수정' };

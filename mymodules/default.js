@@ -54,7 +54,7 @@ router.post('/register', function(req, res) {
     }
 
 
-    let sql = "INSERT INTO nodeDB (`email`, `password`, `name`, `level`) " +
+    let sql = "INSERT INTO users (`email`, `password`, `name`, `level`) " +
              " VALUES (?, PASSWORD(?), ?, 1)";
     conn.query(sql,[data.email, data.password, data.username], (error, result)=>{
         if(error){
@@ -85,7 +85,7 @@ router.post('/login', (req, res)=>{
     let pass = req.body.password;
 
     //console.log(email, pass);
-    let sql = "SELECT * FROM nodeDB WHERE email = ? AND password = PASSWORD(?)";
+    let sql = "SELECT * FROM users WHERE email = ? AND password = PASSWORD(?)";
     conn.query(sql, [email, pass], (err, result)=>{
         if(err){
             req.session.flashMsg = {type:'danger', msg:'DB오류'};

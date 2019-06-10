@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(session({
     resave:false,  //요청 변경시에도 세션정보 저장 일반적으로 false
     saveUninitialized:false, // 초기화되지 않은 세션들도 저장할 것인가?
-    secret:"kanozo"   //사용자한테 보내지는 쿠키를 암호화할 때 쓸 키
+    secret:"gondr"   //사용자한테 보내지는 쿠키를 암호화할 때 쓸 키
 }));
 
 
